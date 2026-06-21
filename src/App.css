@@ -1,0 +1,304 @@
+@font-face {
+  font-family: 'Ferro Rosso';
+  src: url('/fonts/FerroRosso.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(to bottom, #5BB8E8 0%, #87CEEB 50%, #B0DFF7 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-top: 24px;
+  padding-bottom: 32px;
+  /* no horizontal padding — road/SVG must bleed edge-to-edge */
+  overflow-x: hidden;
+}
+
+/* ── Corner emoji buttons ──────────────────────── */
+.corner-icon {
+  position: absolute;
+  top: 16px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  font-size: 1.9rem;
+  line-height: 1;
+  padding: 9px 11px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+.corner-icon:hover {
+  background: rgba(255, 255, 255, 0.55);
+  transform: scale(1.15);
+}
+.corner-icon:active {
+  transform: scale(0.95);
+}
+.corner-icon--left  { left: 16px; }
+.corner-icon--right { right: 16px; }
+
+/* ── Title ─────────────────────────────────────── */
+.title {
+  font-family: 'Ferro Rosso', sans-serif;
+  font-size: clamp(100px, 5vw, 52px);
+  color: #D8332A;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 2px 10px 0 rgba(0, 0, 0, 0.12), 0 0 24px rgba(255, 255, 255, 0.6);
+  margin-bottom: 24px;
+  padding: 0 80px; /* keep away from corner icons */
+}
+
+.sub-title {
+  font-family: 'Ferro Rosso', sans-serif;
+  font-size: clamp(20px, 5vw, 52px);
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 2px 10px 0 rgba(0, 0, 0, 0.12), 0 0 24px rgba(255, 255, 255, 0.6);
+  margin-bottom: 24px;
+  padding: 0 80px; /* keep away from corner icons */
+}
+
+/* ── Scene (arrows + car, full width) ──────────── */
+.scene {
+  display: flex;
+  align-items: center;
+  width: 100%;          /* full page width */
+  gap: 0;
+}
+
+.car-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+/* SVG fills 100% of wrapper width; aspect ratio drives height naturally.
+   No max-width so the road inside always spans the full page. */
+.car-svg {
+  width: 100%;
+  display: block;
+}
+
+/* ── Car bounce animation ──────────────────────── */
+@keyframes car-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+.car-body {
+  animation: car-bounce 0.65s ease-in-out infinite;
+}
+
+/* ── Wheel spin animation ──────────────────────── */
+@keyframes wheel-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.wheel-hub {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wheel-spin 0.75s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .car-body  { animation: none; }
+  .wheel-hub { animation: none; }
+  .heart     { animation: none; opacity: 0; }
+}
+
+/* ── Floating hearts ───────────────────────────── */
+.hearts-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  bottom: -60px;
+  line-height: 1;
+  user-select: none;
+  animation: float-heart linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes float-heart {
+  0% {
+    transform: translateY(0)      translateX(0)     rotate(-8deg)  scale(0.7);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  30% {
+    transform: translateY(-28vh)  translateX(18px)  rotate(6deg)   scale(1.05);
+  }
+  55% {
+    transform: translateY(-52vh)  translateX(-14px) rotate(-4deg)  scale(1.1);
+    opacity: 0.9;
+  }
+  80% {
+    transform: translateY(-76vh)  translateX(10px)  rotate(5deg)   scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-105vh) translateX(-8px)  rotate(-6deg)  scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* ── Arrow buttons ─────────────────────────────── */
+.arrow {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #D8332A;
+  background: rgba(255, 255, 255, 0.92);
+  color: #D8332A;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+  margin: 0 12px;
+  /* sit above the road visually — aligned with car mid-height */
+  position: relative;
+  z-index: 5;
+  /* push arrows up slightly so they center on the car body, not the road */
+  bottom: 22px;
+}
+.arrow:hover {
+  background: #D8332A;
+  color: #fff;
+  transform: scale(1.12);
+}
+.arrow:active {
+  transform: scale(0.93);
+}
+
+/* ── Dot indicators ────────────────────────────── */
+.dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.dot:hover:not(.dot--active) {
+  background: rgba(0, 0, 0, 0.42);
+}
+.dot--active {
+  background: #D8332A;
+  transform: scale(1.4);
+}
+
+/* ── Modal overlay ─────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fade-in 0.15s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: #fff;
+  border-radius: 18px;
+  padding: 36px 30px 30px;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  animation: slide-up 0.2s ease;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #777;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+.modal-close:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.modal-emoji {
+  font-size: 3.2rem;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+.modal-message {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.7;
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: left;
+  margin-bottom: 0.9em;
+}
+.modal-message:last-child {
+  margin-bottom: 0;
+}
